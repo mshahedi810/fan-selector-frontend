@@ -5,21 +5,21 @@ const UnitSelector = ({ value, options, onChange }) => (
   <select
     value={value}
     onChange={e => onChange(e.target.value)}
-    className="bg-white border border-slate-300 text-slate-700 text-xs rounded p-1"
+    className="bg-white border border-slate-300 text-slate-700 text-sm rounded px-2 py-1 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
   >
     {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
   </select>
 );
 
-const StepperInput = ({ value, min, max, step, onChange, unit }) => {
+const StepperInput = ({ value, min, max, step, onChange }) => {
   const decrement = () => onChange(Math.max(value - step, min));
   const increment = () => onChange(Math.min(value + step, max));
 
   return (
-    <div className="flex items-center gap-2 justify-center">
+    <div className="flex items-center gap-2 justify-center mt-1">
       <button
         onClick={decrement}
-        className="bg-red-500 px-3 py-1 rounded hover:bg-red-800"
+        className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition-all shadow"
       >-</button>
       <input
         type="number"
@@ -28,12 +28,11 @@ const StepperInput = ({ value, min, max, step, onChange, unit }) => {
         max={max}
         step={step}
         onChange={e => onChange(Number(e.target.value))}
-        className="w-20 text-center border rounded px-2 py-1"
+        className="w-20 text-center border rounded px-2 py-1 shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-300"
       />
-      
       <button
         onClick={increment}
-        className="bg-green-500 px-3 py-1 rounded hover:bg-green-800"
+        className="bg-green-500 text-white px-3 py-1 rounded-lg hover:bg-green-600 transition-all shadow"
       >+</button>
     </div>
   );
@@ -82,8 +81,8 @@ const FanSelectorForm = ({ filters, onFilterChange }) => {
   }, [filters.staticPressure, units.pressure]);
 
   return (
-    <div className="bg-gradient-to-br from-blue-200 to-blue-50 p-6 rounded-lg shadow-md sticky top-8 no-print max-w-xl mx-auto space-y-6">
-      <h2 className="text-lg font-bold mb-4 border-b pb-2">پارامترهای فنی پروژه</h2>
+    <div className="bg-gradient-to-br from-blue-50 to-blue-200 p-6 rounded-xl shadow-lg sticky top-8 max-w-xl mx-auto space-y-6">
+      <h2 className="text-xl font-bold mb-4 border-b border-blue-300 pb-2 text-blue-800">پارامترهای فنی پروژه</h2>
 
       {/* Airflow */}
       <div>
@@ -95,13 +94,12 @@ const FanSelectorForm = ({ filters, onFilterChange }) => {
             onChange={(u) => setUnits(prev => ({ ...prev, airflow: u }))}
           />
         </label>
-        <div className="text-center font-semibold text-blue-600 mb-2">
+        <div className="text-center font-semibold text-blue-600 mb-2 text-lg">
           {Number(airflowProps.value).toLocaleString('fa-IR')} <span className="text-sm">{units.airflow}</span>
         </div>
         <StepperInput
           {...airflowProps}
           onChange={val => onFilterChange({ ...filters, airflow: toBaseValue(val, 'airflow') })}
-          unit={units.airflow}
         />
       </div>
 
@@ -115,35 +113,31 @@ const FanSelectorForm = ({ filters, onFilterChange }) => {
             onChange={(u) => setUnits(prev => ({ ...prev, pressure: u }))}
           />
         </label>
-        <div className="text-center font-semibold text-blue-600 mb-2">
+        <div className="text-center font-semibold text-blue-600 mb-2 text-lg">
           {Number(pressureProps.value).toLocaleString('fa-IR')} <span className="text-sm">{units.pressure}</span>
         </div>
         <StepperInput
           {...pressureProps}
           onChange={val => onFilterChange({ ...filters, staticPressure: toBaseValue(val, 'pressure') })}
-          unit={units.pressure}
         />
       </div>
 
       {/* Temperature */}
-      <div className='flex flex-col'>
-        
-          <div className='flex justify-between'>
-            <span>دمای کاری</span>
-            <span>°C</span>
-          </div>
-          
-          <span className="font-semibold text-center text-blue-600">{filters.temperature.toLocaleString('fa-IR')}°C</span>
-        
-          <StepperInput
+      <div>
+        <label className="flex justify-between items-center mb-1 text-sm font-medium text-gray-700">
+          <span>دمای کاری</span>
+          <span>°C</span>
+        </label>
+        <div className="text-center font-semibold text-blue-600 mb-2 text-lg">
+          {filters.temperature.toLocaleString('fa-IR')}°C
+        </div>
+        <StepperInput
           value={filters.temperature}
           min={-30}
           max={100}
           step={1}
           onChange={val => onFilterChange({ ...filters, temperature: val })}
-          unit="°C"
         />
-        
       </div>
 
       <p className="text-center text-xs text-gray-500 mt-2">

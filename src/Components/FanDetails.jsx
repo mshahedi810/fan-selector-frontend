@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { m3hToCfm, cfmToM3h, paToInwg, inwgToPa } from '../utils/conversions';
+import { FaTachometerAlt, FaChartLine, FaDollarSign, FaMicrochip } from 'react-icons/fa';
 
 const SpecRow = ({ label, value, unit }) => (
   <div className="flex justify-between items-center py-2 border-b border-slate-200">
@@ -38,7 +39,7 @@ const EconomicAnalysis = ({ fan }) => {
           <input type="number" value={days} onChange={e => setDays(Number(e.target.value))} className="w-full mt-1 p-2 border rounded-md bg-white"/>
         </div>
       </div>
-      <div className="bg-blue-50 border-r-4 border-blue-500 p-4 rounded-md text-center">
+      <div className="bg-blue-50 border-r-4 border-blue-500 p-4 rounded-md text-center transition-all duration-300 hover:bg-blue-100">
         <p className="text-sm text-slate-700">هزینه تخمینی کارکرد سالانه:</p>
         <p className="text-2xl font-bold text-blue-700 mt-1">
           {annualCost.toLocaleString('fa-IR', { maximumFractionDigits: 0 })}
@@ -69,15 +70,15 @@ const Monitoring = ({ fan }) => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-      <div className="bg-slate-100 p-4 rounded-lg">
+      <div className="bg-slate-100 p-4 rounded-lg shadow hover:shadow-lg transition-all duration-300">
         <div className="text-sm text-slate-500">سرعت موتور (RPM)</div>
         <div className="text-3xl font-bold text-slate-800 mt-2">{monitoringData.rpm.toLocaleString('fa-IR')}</div>
       </div>
-      <div className="bg-slate-100 p-4 rounded-lg">
+      <div className="bg-slate-100 p-4 rounded-lg shadow hover:shadow-lg transition-all duration-300">
         <div className="text-sm text-slate-500">دمای موتور (°C)</div>
         <div className="text-3xl font-bold text-slate-800 mt-2">{monitoringData.temp.toLocaleString('fa-IR', {maximumFractionDigits: 1})}</div>
       </div>
-      <div className="bg-slate-100 p-4 rounded-lg">
+      <div className="bg-slate-100 p-4 rounded-lg shadow hover:shadow-lg transition-all duration-300">
         <div className="text-sm text-slate-500">لرزش (mm/s)</div>
         <div className="text-3xl font-bold text-slate-800 mt-2">{monitoringData.vibration.toLocaleString('fa-IR', {maximumFractionDigits: 2})}</div>
       </div>
@@ -200,7 +201,7 @@ const PerformanceSimulator = ({ fan }) => {
 
       {/* نقطه کارکرد */}
       {convertedOperatingPoint && (
-        <div className="p-4 border-l-4 border-green-500 bg-green-50 rounded-lg">
+        <div className="p-4 border-l-4 border-green-500 bg-green-50 rounded-lg transition-all duration-300 hover:bg-green-100">
           <h4 className="font-bold mb-3 text-green-800">نقطه کارکرد شبیه‌سازی شده</h4>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
             <div>
@@ -247,10 +248,10 @@ const FanDetails = ({ fan, onBack }) => {
   const handlePrint = () => window.print();
 
   const tabs = [
-    { id: 'specs', label: 'مشخصات فنی' },
-    { id: 'simulation', label: 'شبیه‌سازی عملکرد' },
-    { id: 'eco', label: 'آنالیز اقتصادی' },
-    { id: 'monitor', label: 'مانیتورینگ IoT (شبیه‌سازی)' },
+    { id: 'specs', label: 'مشخصات فنی', icon: <FaTachometerAlt /> },
+    { id: 'simulation', label: 'شبیه‌سازی عملکرد', icon: <FaChartLine /> },
+    { id: 'eco', label: 'آنالیز اقتصادی', icon: <FaDollarSign /> },
+    { id: 'monitor', label: 'مانیتورینگ IoT', icon: <FaMicrochip /> },
   ];
 
   return (
@@ -275,9 +276,9 @@ const FanDetails = ({ fan, onBack }) => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm ${activeTab === tab.id ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'}`}
+                  className={`whitespace-nowrap py-3 px-2 border-b-2 font-medium text-sm flex items-center gap-2 transition-all duration-200 ${activeTab === tab.id ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'}`}
                 >
-                  {tab.label}
+                  {tab.icon} {tab.label}
                 </button>
               ))}
             </nav>

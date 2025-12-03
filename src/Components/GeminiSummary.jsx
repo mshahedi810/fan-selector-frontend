@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { FiRefreshCw, FiAlertCircle, FiCheckCircle } from 'react-icons/fi';
 
 const GeminiSummary = ({ fans }) => {
   const [summary, setSummary] = useState('');
@@ -27,7 +28,7 @@ const GeminiSummary = ({ fans }) => {
         `Model: ${f.model}, Type: ${f.type}, Airflow: ${f.maxAirflow} m3/h, Pressure: ${f.maxStaticPressure} Pa, Power: ${f.powerConsumption} kW, Noise: ${f.noiseLevel} dB`
       ).join('\n');
 
-      const prompt = `As an expert HVAC engineer, provide a brief Persian summary for the following industrial fans. Highlight key strengths and ideal applications for each model.
+      const prompt = `به عنوان یک مهندس حرفه‌ای HVAC، یک خلاصه فارسی کوتاه برای فن‌های صنعتی زیر ارائه دهید. نقاط قوت و کاربرد ایده‌آل هر مدل را ذکر کنید.
 
 Fan Data:
 ${fanDataString}`;
@@ -36,7 +37,6 @@ ${fanDataString}`;
         contents: prompt
       });
 
-      // بررسی انواع ساختار پاسخ
       const text = result.output_text || result.contents?.[0]?.text || "خطا: پاسخی دریافت نشد";
       setSummary(text);
 
@@ -49,19 +49,20 @@ ${fanDataString}`;
   };
 
   return (
-    <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-2xl p-5 mb-6 shadow-lg hover:shadow-xl transition-shadow duration-300 relative">
+    <div className="bg-gradient-to-tr from-indigo-50 to-blue-50 border border-blue-200 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-shadow duration-300 relative">
+      
       {/* Header */}
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="flex items-center gap-2 text-lg font-bold bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-3 py-1 rounded-xl shadow-sm">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-3">
+        <h3 className="flex items-center gap-3 text-lg font-bold bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-2 rounded-2xl shadow-md">
           🧠 خلاصه هوشمند
         </h3>
 
         <button
           onClick={getSummary}
           disabled={isLoading || fans.length === 0}
-          className="flex items-center gap-1 bg-gradient-to-r from-blue-600 to-indigo-700 text-white text-sm py-2 px-5 rounded-2xl shadow-md hover:scale-105 transform transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-700 text-white text-sm py-2 px-6 rounded-2xl shadow-md hover:scale-105 transform transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isLoading ? '⏳ در حال پردازش...' : '📝 تولید خلاصه'}
+          {isLoading ? '⏳ در حال پردازش...' : <><FiRefreshCw /> تولید خلاصه</>}
         </button>
       </div>
 
@@ -70,28 +71,25 @@ ${fanDataString}`;
 
       {/* Error */}
       {error && (
-        <p className="text-red-600 text-sm mb-2 flex items-center gap-1">
-          ⚠️ {error}
+        <p className="flex items-center gap-2 text-red-600 text-sm mb-2 bg-red-100 p-2 rounded-lg shadow-inner">
+          <FiAlertCircle /> {error}
         </p>
       )}
 
       {/* Summary */}
       {summary && (
-        <div className="mt-2 bg-white p-4 rounded-xl shadow-inner border border-blue-100 text-sm text-slate-700 whitespace-pre-wrap leading-relaxed hover:shadow-md transition-shadow duration-200">
+        <div className="mt-3 bg-white p-5 rounded-2xl shadow-inner border border-blue-100 text-sm text-slate-700 whitespace-pre-wrap leading-relaxed hover:shadow-md transition-shadow duration-200">
           {summary}
         </div>
       )}
 
-      {/* Footer / Info اضافه */}
-      <div className="flex justify-between items-center mt-3 text-xs text-blue-600">
-        <span>تعداد فن‌ها: {fans.length}</span>
-        <span>آخرین بروزرسانی: {new Date().toLocaleDateString('fa-IR')}</span>
+      {/* Footer / Info */}
+      <div className="flex flex-wrap justify-between items-center mt-4 text-xs text-blue-600 gap-2">
+        <span className="flex items-center gap-1"><FiCheckCircle /> تعداد فن‌ها: {fans.length}</span>
+        <span className="flex items-center gap-1"><FiRefreshCw /> آخرین بروزرسانی: {new Date().toLocaleDateString('fa-IR')}</span>
       </div>
     </div>
-
-
-
   );
 };
 
-export default GeminiSummary
+export default GeminiSummary;
