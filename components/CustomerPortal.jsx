@@ -32,8 +32,6 @@ const CustomerPortal = () => {
         if (!res.ok) throw new Error('Failed to fetch fans from API');
         const data = await res.json();
 
-        console.log(data)
-
         const fansWithSeries = data.map(f => ({
           ...f,
           _id: f._id || f.id,
@@ -59,11 +57,6 @@ const CustomerPortal = () => {
     fetchFans();
   }, []);
 
-  // دیباگ compareList
-  useEffect(() => {
-    console.log("compareList updated:", compareList);
-  }, [compareList]);
-
   const filteredFans = useMemo(() => {
     return fans.filter(fan =>
       fan.maxAirflow >= filters.airflow &&
@@ -84,14 +77,12 @@ const CustomerPortal = () => {
       if (exists) {
         return prev.filter(f => f._id !== fan._id);
       }
-      // اضافه کردن جدید فقط اگر کمتر از 4 تا هست
       if (prev.length < 4) {
         return [...prev, fan];
       }
       return prev;
     });
   };
-
 
   const handleShowComparison = () => {
     if (compareList.length > 1) setView('compare');
@@ -114,8 +105,10 @@ const CustomerPortal = () => {
 
     return (
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
-        {/* سمت چپ: فیلتر صوتی + فرم */}
+        {/* سمت چپ: فرم و AI */}
         <div className="lg:col-span-1 space-y-6">
+          <FanSelectorForm filters={filters} onFilterChange={setFilters} />
+
           <AIVoiceFilter
             onAiResponse={setAiResponse}
             webhookUrl="https://n8n.ftp-co.com/webhook/fan-session"
@@ -126,8 +119,6 @@ const CustomerPortal = () => {
             onAiResponse={setAiResponse}
           />
 
-          <FanSelectorForm filters={filters} onFilterChange={setFilters} />
-
           {aiResponse && (
             <div className="p-4 bg-green-50 rounded-xl shadow-md text-sm text-gray-800 space-y-2">
               <h4 className="font-semibold mb-2">پیشنهاد AI Agent:</h4>
@@ -136,7 +127,7 @@ const CustomerPortal = () => {
           )}
         </div>
 
-        {/* سمت راست: لیست نتایج */}
+        {/* سمت راست: نتایج */}
         <div className="lg:col-span-3">
           <FanResults
             fans={filteredFans}
